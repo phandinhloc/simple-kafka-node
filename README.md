@@ -42,7 +42,7 @@ const handleFunction = async (data) => {
     // handle data
 }
 await consumer.subscribe('topic1', 'anEventOnTopic1', (eventData) => {
-    return genericHandler(handleFunction, eventData);
+    return genericHandler(handleFunction, logger.error, eventData);
   });
   
  ```
