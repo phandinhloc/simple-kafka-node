@@ -34,4 +34,3 @@ module.exports.sendMessage = (topic, data, key) => new Promise((resolve, reject)
 
 module.exports.reportError = (eventKey, error, data) => module.exports.sendMessage('errorLog', { eventKey, error, data });
 module.exports.reportActivity = (eventKey, data) => module.exports.sendMessage('activityLog', { eventKey, data });
-

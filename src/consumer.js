@@ -1,5 +1,4 @@
 const kafka = require('kafka-node');
-const logger = require('../../config/logger');
 const { kafkaUrl, consumerGroup } = require('./messaging-config');
 
 module.exports = {};
@@ -10,7 +9,7 @@ const topics = new Set();
 
 const getHandleKey = (topic, eventType) => `${topic}/${eventType}`;
 
-module.exports.init = () => new Promise((resolve, reject) => {
+module.exports.init = (logger) => new Promise((resolve, reject) => {
   try {
     consumer = new kafka.ConsumerGroup({
       host: kafkaUrl,
@@ -29,8 +28,10 @@ module.exports.init = () => new Promise((resolve, reject) => {
           logger.info(`Not interesting event ${eventKey}`);
         }
       } catch (error) {
-        logger.error(`Unable to handle event ${message}`);
-        logger.error(error);
+        if(logger){
+          logger.error(`Unable to handle event ${message}`);
+          logger.error(error);
+        }
       }
     });
 
@@ -65,4 +66,3 @@ module.exports.subscribe = (topic, eventType, handler) => new Promise((resolve, 
   }
   resolve({});
 });
-
