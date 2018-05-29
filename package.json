@@ -1,0 +1,27 @@
+{
+  "name": "simple-kafka-node",
+  "version": "1.0.0",
+  "description": "Simple interface to work kafka messaging",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phandinhloc/simple-kafka-node.git"
+  },
+  "keywords": [
+    "kafka",
+    "node",
+    "messaging"
+  ],
+  "author": "Phan Dinh Loc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phandinhloc/simple-kafka-node/issues"
+  },
+  "homepage": "https://github.com/phandinhloc/simple-kafka-node#readme",
+  "dependencies": {
+    "kafka-node": "^2.6.1"
+  }
+}
