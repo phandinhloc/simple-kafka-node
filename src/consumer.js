@@ -9,17 +9,17 @@ const handlerMap = new Map();
 const topics = new Set();
 const getHandleKey = (topic, eventType) => `${topic}/${eventType}`;
 
-module.exports.init = () => new Promise((resolve, reject) => {
+module.exports.connect = () => new Promise((resolve, reject) => {
   try {
     logger.info(`listen to kafka at ${kafkaUrl}`)
     consumer = new kafka.ConsumerGroup({
       kafkaHost: kafkaUrl,
       groupId: consumerGroup,
-    }, []);
+    }, [...topics]);
 
     consumer.on('message', (message) => {
       try {
-        givenLogger.debug(`new message ${message}`)
+        logger.debug(`new message ${message}`)
         const { topic } = message;
         const event = JSON.parse(message.value);
         const eventKey = getHandleKey(topic, event.type);
@@ -31,8 +31,17 @@ module.exports.init = () => new Promise((resolve, reject) => {
         }
       } catch (error) {
           logger.error(`Unable to handle event ${message}`);
-          logger.error(error);
+          logger.error(`Error ${error}`);
       }
+      // Set up the timeout
+      setTimeout(function() {
+           reject(new Error('Timeout during initializing consumer'));
+       }, 5000);
+    });
+
+    consumer.on('connect', function () {
+      logger.info('Consumer connects successfully');
+      resolve();
     });
 
     consumer.on('error', (err) => {
@@ -47,30 +56,12 @@ module.exports.init = () => new Promise((resolve, reject) => {
 });
 
 
-module.exports.subscribe = (topic, eventType, handler) => new Promise((resolve, reject) => {
+module.exports.subscribe = (topic, eventType, handler) => {
   const handleKey = getHandleKey(topic, eventType);
   if (handlerMap.get(handleKey)) {
     // support one handle/topic at this moment.
-    reject(new Error(`Duplicated handle on ${handleKey}`));
+    throw new Error(`Duplicated handle on ${handleKey}`);
   }
   handlerMap.set(handleKey, handler);
-  if (!topics.has(topic)) {
-    logger.info(`subscribe to topic ${topic}`)
-    consumer.addTopics([topic], (err, added) => {
-      if (err) {
-        logger.error(`subscribe to topic ${topic} failure`)
-        reject(new Error(err));
-      } else {
-        logger.info(`subscribe to topic ${topic} successfully`)
-        topics.add(topic);
-        resolve(added);
-      }
-    });
-    // Set up the timeout
-    setTimeout(function() {
-           reject(`Timeout when subscribe to topic ${topic}`);
-       }, 5000);
-  } else {
-    resolve();
-  }
-});
+  topics.add(topic);
+};

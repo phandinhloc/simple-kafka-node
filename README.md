@@ -22,10 +22,11 @@ MESSAGING_GROUP : message group, default: "bidding"
 ## Consumer
 ```
 const {consumer} = require('simple-kafka-node');
-await consumer.init(['simple-kafka-node', 'topic2']);
+
 await consumer.subscribe('topic1', 'anEventOnTopic1', (eventData) => {
     logger.info(`New event ${eventData}`);
 });
+await consumer.connect();
 ```
 
 
@@ -42,8 +43,8 @@ const handleFunction = async (data) => {
     // handle data
 }
 await consumer.subscribe('topic1', 'anEventOnTopic1', (eventData) => {
-    return genericHandler(handleFunction, logger.error, eventData);
+    return genericHandler(handleFunction, (err) => { logger.error(`${err}`); }, eventData);
   });
-  
+
  ```
 if "handleFunction" has error, a message will be send to "errorLog" topic, else an message is sent to "activityLog" topic

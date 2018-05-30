@@ -8,10 +8,21 @@ let producer;
 module.exports.init = () => new Promise((resolve, reject) => {
   try {
     logger.info(`Initialize producer at ${kafkaUrl} for client ${clientId}`);
-    const client = new kafka.Client(kafkaUrl, clientId);
+    const client = new kafka.KafkaClient({kafkaHost:kafkaUrl});
     producer = new kafka.HighLevelProducer(client);
-    logger.info('Finish initializing producer');
-    resolve();
+    producer.on('ready', function () {
+      logger.info('Producer is ready');
+      resolve();
+    });
+    producer.on('error', function (err) {
+      console.log('error', err);
+    });
+
+    setTimeout(function() {
+        reject(new Error('Timeout during initializing producer'));
+    }, 5000);
+
+
   } catch (e) {
       logger.error(`Initialize producer error ${e}`);
     reject(e);
