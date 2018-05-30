@@ -1,15 +1,19 @@
 const kafka = require('kafka-node');
 const { kafkaUrl, clientId } = require('./messaging-config');
+let logger = require('./logger');
 
 module.exports = {};
 
 let producer;
 module.exports.init = () => new Promise((resolve, reject) => {
   try {
+    logger.info(`Initialize producer at ${kafkaUrl} for client ${clientId}`);
     const client = new kafka.Client(kafkaUrl, clientId);
     producer = new kafka.HighLevelProducer(client);
+    logger.info('Finish initializing producer');
     resolve();
   } catch (e) {
+      logger.error(`Initialize producer error ${e}`);
     reject(e);
   }
 });

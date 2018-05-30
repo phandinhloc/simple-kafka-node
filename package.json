@@ -1,6 +1,6 @@
 {
   "name": "simple-kafka-node",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Simple interface to work kafka messaging",
   "main": "index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/phandinhloc/simple-kafka-node#readme",
   "dependencies": {
-    "kafka-node": "^2.6.1"
+    "kafka-node": "^2.6.1",
+    "winston": "^3.0.0-rc4"
   }
 }
