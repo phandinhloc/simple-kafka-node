@@ -1,6 +1,6 @@
 {
   "name": "simple-kafka-node",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Simple interface to work kafka messaging",
   "main": "index.js",
   "scripts": {
