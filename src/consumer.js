@@ -53,7 +53,7 @@ module.exports = class SimpleConsumer {
         // Set up the timeout
         setTimeout((function () {
           reject(new Error(`Timeout during initializing consumer ${this.name}`));
-        }).bind(this), 15000);
+        }).bind(this), 60000);
       } catch (err) {
         reject(err);
       }
