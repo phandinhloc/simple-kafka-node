@@ -3,12 +3,12 @@ const { kafkaUrl, consumerGroup } = require('./messaging-config');
 let logger = require('./logger');
 
 module.exports = class SimpleConsumer {
-  constructor(name){
+  constructor(name, options){
     this.name = (name || 'Default');
     this.handlerMap = new Map();
     this.consumer = null;
     this.topics = new Set();
-
+    this.groupId = (options && options.groupId) || consumerGroup;
   }
   static getHandleKey (topic, eventType) {
     return `${topic}/${eventType}`
@@ -39,7 +39,7 @@ module.exports = class SimpleConsumer {
         logger.info(`Consumer ${this.name} listen to kafka at ${kafkaUrl}`)
         this.consumer = new kafka.ConsumerGroup({
           kafkaHost: kafkaUrl,
-          groupId: consumerGroup,
+          groupId: this.groupId,
         }, [...this.topics]);
 
         this.consumer.on('message', this.handleMessage.bind(this));
